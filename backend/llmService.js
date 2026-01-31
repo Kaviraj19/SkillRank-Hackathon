@@ -16,9 +16,9 @@ Task:
 Explain in 1-2 short sentences why this product is a good match for the user's intent.
 Focus on usefulness and relevance.
 `;
-
+    console.log(prompt);
   const explanation = await callLLM(prompt);
-
+ 
   return explanation.trim();
 }
 

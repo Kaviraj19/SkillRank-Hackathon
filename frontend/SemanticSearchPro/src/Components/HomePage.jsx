@@ -4,6 +4,9 @@ import axios from "axios";
 export default function HomePage() {
 
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("");
+  const [sortBy, setSortBy] = useState("similarity");
+
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,7 +21,9 @@ export default function HomePage() {
     try {
       const res = await axios.post("http://localhost:3000/search", {
         query,
-        limit: 5
+        limit: 5,
+        category,
+        sortBy
       });
 
       setResults(res.data);
@@ -34,11 +39,11 @@ export default function HomePage() {
 
       <h1 style={styles.title}>🔍 AI Semantic Product Search</h1>
 
-      {/* Search Bar */}
+      {/* Search Row */}
       <div style={styles.searchBox}>
         <input
           style={styles.input}
-          placeholder="Search products like: tablet for kids under 15000"
+          placeholder="Search products like: tablet for kids"
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={e => e.key === "Enter" && handleSearch()}
@@ -47,6 +52,23 @@ export default function HomePage() {
         <button style={styles.button} onClick={handleSearch}>
           Search
         </button>
+      </div>
+
+      {/* Filters */}
+      <div style={styles.filters}>
+
+        
+
+        <select
+          style={styles.select}
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value)}
+        >
+          <option value="similarity">Sort by Similarity</option>
+          <option value="rating">Sort by Rating</option>
+          <option value="smart">Smart Ranking</option>
+        </select>
+
       </div>
 
       {/* Loading */}
@@ -58,8 +80,8 @@ export default function HomePage() {
       {/* Results */}
       <div style={styles.results}>
 
-        {results.map((item, index) => (
-          <div key={index} style={styles.card}>
+        {results.map((item) => (
+          <div key={item.name} style={styles.card}>
 
             <h3>{item.name}</h3>
 
@@ -96,6 +118,13 @@ const styles = {
     display: "flex",
     gap: "10px",
     justifyContent: "center",
+    marginBottom: "15px"
+  },
+
+  filters: {
+    display: "flex",
+    gap: "10px",
+    justifyContent: "center",
     marginBottom: "30px"
   },
 
@@ -103,6 +132,19 @@ const styles = {
     width: "60%",
     padding: "12px",
     fontSize: "16px",
+    borderRadius: "6px",
+    border: "1px solid #ccc"
+  },
+
+  filterInput: {
+    padding: "10px",
+    width: "220px",
+    borderRadius: "6px",
+    border: "1px solid #ccc"
+  },
+
+  select: {
+    padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc"
   },
@@ -130,11 +172,11 @@ const styles = {
     boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
   },
 
- explanation: {
-  marginTop: "12px",
-  fontStyle: "italic",
-  color: "#7bf3fb",        // nice AI purple-blue
-  textAlign: "center",    // center aligned
-  fontWeight: "500"
-}
+  explanation: {
+    marginTop: "12px",
+    fontStyle: "italic",
+    color: "#7bf3fb",
+    textAlign: "center",
+    fontWeight: "500"
+  }
 };
